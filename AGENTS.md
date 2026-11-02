@@ -10,6 +10,7 @@ even when starting from the repository root.
 
 ## Working agreements
 
+- Do not use emoji in frontend, UI or UX work; use Lucide icons for iconography.
 - If the request is unclear, ask the user to decide. If it has a problem, explain it
   and stop before carrying out the problematic part.
 - Before starting, check the branch and fetch its remote; keep it current with its
