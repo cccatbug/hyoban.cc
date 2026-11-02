@@ -16,6 +16,17 @@ and the pieces around it that record and serve them.
 └─ docs/                data.md, assets.md and deploy.md
 ```
 
+## This fork's deployment
+
+This fork uses `here-moments-api`, the `here-moments` D1 database and the
+`here-moments-media` R2 bucket in its own Cloudflare account. The site is deployed to
+`here.hulahula.blog`; the Android app takes the API URL, media origin and token in its
+sync settings. The original author's posts and other static assets remain in this fork;
+new Moment media uses `media.hulahula.blog`. Never commit API tokens.
+
+The site is static: after a published change, it must be rebuilt from the API and
+redeployed until Workers Builds and its deploy hook have been connected.
+
 ## How it fits together
 
 ```

@@ -1,7 +1,7 @@
 {
-  "name": "hyoban-cc",
+  "name": "here-moments-web",
+  "workers_dev": true,
   "compatibility_date": "2026-01-23",
-  "assets": {
-    "directory": "./dist",
-  },
+  "assets": { "directory": "./dist" },
+  "routes": [{ "pattern": "here.hulahula.blog", "custom_domain": true }],
 }

@@ -84,16 +84,15 @@ const HOT_WORDS = [
 let hotWords: Promise<{ word: string; count: number }[]> | undefined
 
 /**
- * The hot words with how many entries each finds; one that finds none fails the build.
+ * The hot words with how many entries each finds; omit words with no results.
  * Counted once a build: every page's search overlay shows them.
  */
 export function getHotWords() {
   hotWords ??= getSearchEntries().then((all) =>
     HOT_WORDS.map((word) => {
       const count = searchEntries(all, word).length
-      if (count === 0) throw new Error(`The search hot word "${word}" finds nothing.`)
       return { word, count }
-    }),
+    }).filter(({ count }) => count > 0),
   )
   return hotWords
 }

@@ -1,26 +1,24 @@
 {
-  "name": "hyoban-cc-api",
+  "name": "here-moments-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-01-23",
   // The spec's Zod is most of the bundle; minifying takes it from 800 to 480 KiB.
   "minify": true,
   "observability": { "enabled": true },
-  // Created with `wrangler d1 create hyoban-cc --location apac`.
+  // The independent database for this deployment.
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "hyoban-cc",
-      "database_id": "d4330b94-a98a-4a1e-ae7c-36d0570f4547",
+      "database_name": "here-moments",
+      "database_id": "9dccb455-3179-415d-92c3-ab540dba304b",
       "migrations_dir": "migrations",
     },
   ],
-  // The bucket image.hyoban.cc serves; uploads wait under uploads/ until they publish.
-  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "blog-images" }],
-  // Where a new place's province, city and district are looked up,
-  // and the Telegram channel the Moments are posted to.
+  // Uploads wait under uploads/ until they publish.
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "here-moments-media" }],
+  // Where a new place's province, city and district are looked up.
   "vars": {
     "DIVISIONS_URL": "https://geo.datav.aliyun.com/areas_v3/bound",
-    "TELEGRAM_CHAT_ID": "@hyoban_travel",
   },
   // Posts to the channel what an earlier run left, as a write's run past its 30 seconds.
   "triggers": { "crons": ["*/15 * * * *"] },

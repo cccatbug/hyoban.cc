@@ -20,7 +20,7 @@ import { listJsonFiles } from './store.ts'
 // lands on disk in data/'s layout: for the site's build (api-data.ts) and for the copy in
 // data/ (`pnpm data:export`).
 
-export const DEFAULT_API_URL = 'https://hyoban-cc-api.hyoban.workers.dev'
+export const DEFAULT_API_URL = 'https://here-moments-api.mushrous.workers.dev'
 
 export interface Snapshot {
   revision: number

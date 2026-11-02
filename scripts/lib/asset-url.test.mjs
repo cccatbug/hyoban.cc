@@ -25,15 +25,15 @@ const original = (width, key = 'moments/2026/10/19-01-e2e-pier/e2e-pier.jpg') =>
 test('a large original comes in the three widths', () => {
   assert.deepEqual(getResizedSources(original(4032)), [
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/image/width=480,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
+      src: 'https://media.hulahula.blog/cdn-cgi/image/width=480,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
       width: 480,
     },
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/image/width=960,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
+      src: 'https://media.hulahula.blog/cdn-cgi/image/width=960,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
       width: 960,
     },
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/image/width=1920,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
+      src: 'https://media.hulahula.blog/cdn-cgi/image/width=1920,format=auto,onerror=redirect/moments/2026/10/19-01-e2e-pier/e2e-pier.jpg',
       width: 1920,
     },
   ])
@@ -59,15 +59,15 @@ test('a small original stops at its own width, and keys stay encoded', () => {
 test('a kept video’s poster is its first frame at each width', () => {
   assert.deepEqual(getFrameSources('moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4', 1080), [
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/media/mode=frame,time=0s,width=480,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
+      src: 'https://media.hulahula.blog/cdn-cgi/media/mode=frame,time=0s,width=480,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
       width: 480,
     },
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/media/mode=frame,time=0s,width=960,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
+      src: 'https://media.hulahula.blog/cdn-cgi/media/mode=frame,time=0s,width=960,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
       width: 960,
     },
     {
-      src: 'https://image.hyoban.cc/cdn-cgi/media/mode=frame,time=0s,width=1080,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
+      src: 'https://media.hulahula.blog/cdn-cgi/media/mode=frame,time=0s,width=1080,format=jpg/moments/2026/10/19-01-e2e-pier/e2e-pier-video.mp4',
       width: 1080,
     },
   ])

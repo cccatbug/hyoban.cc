@@ -77,7 +77,8 @@ function replaceTripLinks(
     const trip = trips.get(tripId)
 
     if (!trip) {
-      throw new Error(`A post links to unknown trip "${tripId}".`)
+      link.url = `https://hyoban.cc${link.url}`
+      continue
     }
 
     node.children![index] = {

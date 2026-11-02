@@ -7,7 +7,8 @@ export function getAssetUrl(key: string) {
     .map((segment) => encodeURIComponent(segment))
     .join('/')
 
-  return `${assetConfig.origin}/${encodedKey}`
+  const origin = key.startsWith('moments/') ? assetConfig.origin : 'https://image.hyoban.cc'
+  return `${origin}/${encodedKey}`
 }
 
 /** The widths a kept original is resized to: what the pipeline gives its variants and still. */
