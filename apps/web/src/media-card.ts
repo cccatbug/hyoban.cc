@@ -1,11 +1,20 @@
 import generated from '@/data/media.generated.json'
 import recommendations from '@/data/media-recommendations.json'
 
+type MediaItem = {
+  type: string
+  tmdbId: number
+  data: { poster_path?: string | null; genres?: { id?: number }[] }
+}
+type Recommendation = { type: string; tmdbId: number }
+
 /** Six stable picks, alternating animation, series and movies from the recommendation list. */
 export function getMediaPosters() {
-  const byKey = new Map(generated.items.map((item) => [`${item.type}:${item.tmdbId}`, item]))
+  const byKey = new Map(
+    (generated.items as MediaItem[]).map((item) => [`${item.type}:${item.tmdbId}`, item]),
+  )
   const groups = new Map<string, string[]>()
-  for (const recommendation of recommendations) {
+  for (const recommendation of recommendations as Recommendation[]) {
     const item = byKey.get(`${recommendation.type}:${recommendation.tmdbId}`)
     if (!item?.data.poster_path) continue
     const category = item.data.genres?.some((genre) => genre.id === 16) ? 'anime' : item.type

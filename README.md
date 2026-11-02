@@ -21,7 +21,7 @@ and the pieces around it that record and serve them.
 This fork uses `here-moments-api`, the `here-moments` D1 database and the
 `here-moments-media` R2 bucket in its own Cloudflare account. The site is deployed to
 `here.hulahula.blog`; the Android app takes the API URL, media origin and token in its
-sync settings. The original author's posts and other static assets remain in this fork;
+sync settings. The original author's posts and personal lists have been cleared;
 new Moment media uses `media.hulahula.blog`. Never commit API tokens.
 
 The site is static: after a published change, it must be rebuilt from the API and

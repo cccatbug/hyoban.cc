@@ -1,5 +1,4 @@
 ---
-import { getAssetUrl } from '@/asset-url'
 import { SITE_TAGLINE, SITE_TITLE } from '@/consts'
 import { getMoments } from '@/moments'
 import { getReviewYears } from '@/year-review'
@@ -22,13 +21,6 @@ const isCurrent = (item: { href: string; match?: RegExp }) =>
 
 <header class="site-header">
   <a href="/" class="site-header__home">
-    <img
-      src={getAssetUrl('site/avatar-80.webp')}
-      alt=""
-      width="40"
-      height="40"
-      class="site-header__avatar"
-    />
     <span class="site-header__name">
       <span class="site-header__title">{SITE_TITLE}<span class="sr-only"> 首页</span></span>
       <span class="site-header__description" aria-hidden="true">{SITE_TAGLINE}</span>

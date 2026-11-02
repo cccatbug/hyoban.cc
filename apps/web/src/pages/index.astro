@@ -28,6 +28,8 @@ for (const post of posts) {
     <h1 class="sr-only">{SITE_TITLE}</h1>
     <p>{SITE_DESCRIPTION}</p>
 
+    {postsByYear.length === 0 && <p class="empty-message">还没有文章，等你记录。</p>}
+
     <section class="post-years" aria-label="文章">
       {
         postsByYear.map((group) => (
@@ -51,6 +53,11 @@ for (const post of posts) {
 </Layout>
 
 <style>
+  .empty-message {
+    margin-top: 4rem;
+    color: var(--color-tx-2);
+  }
+
   .post-years {
     display: flex;
     flex-direction: column;

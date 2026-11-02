@@ -2,9 +2,9 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_URL = 'https://here.hulahula.blog'
-export const SITE_TITLE = 'Hyoban'
-export const SITE_TAGLINE = 'Do what you like'
-export const SITE_DESCRIPTION = '写代码、做开源，也记录生活和旅途。'
+export const SITE_TITLE = 'Here'
+export const SITE_TAGLINE = '记录生活'
+export const SITE_DESCRIPTION = '记录生活与旅途。'
 
 // The calendar renders both its desktop grid and its agenda and hides one with CSS. The
 // grid's eager thumbnails put this in a <source> for the other viewports, so a phone

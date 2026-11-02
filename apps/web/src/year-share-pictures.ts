@@ -219,7 +219,7 @@ function drawSquares({ canvas, scale, width, blocks }: Drawing, mark: string) {
     context.fillStyle = style.getPropertyValue('--color-tx-3')
     const baseline = side - PADDING.y / 2
     context.textAlign = 'left'
-    context.fillText('Hyoban', PADDING.x, baseline)
+    context.fillText('Here', PADDING.x, baseline)
     context.textAlign = 'right'
     context.fillText(`${mark} ${index + 1}/${squares.length}`, side - PADDING.x, baseline)
     return square
@@ -260,11 +260,12 @@ export async function drawPictures(mode: Mode, content: HTMLElement, year: strin
   const frame = mode === 'square' || innerWidth > FRAME_WIDTH ? await openWide() : undefined
   try {
     const drawing = await drawYear(frame?.content ?? content)
-    const canvases = mode === 'long' ? [drawing.canvas] : drawSquares(drawing, `hyoban.cc/${year}`)
+    const canvases =
+      mode === 'long' ? [drawing.canvas] : drawSquares(drawing, `here.hulahula.blog/${year}`)
     // Encoded before the frame goes: a canvas of its page draws nothing once it's gone.
     return await Promise.all(
       canvases.map(async (canvas, index) => {
-        const name = mode === 'long' ? `hyoban-${year}.jpg` : `hyoban-${year}-${index + 1}.jpg`
+        const name = mode === 'long' ? `here-${year}.jpg` : `here-${year}-${index + 1}.jpg`
         return new File([await toJpeg(canvas)], name, { type: 'image/jpeg' })
       }),
     )

@@ -3,7 +3,6 @@ import { mkdir, readFile, rename, rm, readdir, stat, utimes, writeFile } from 'n
 import { join } from 'node:path'
 import satori from 'satori'
 import sharp from 'sharp'
-import { getAssetUrl } from '@/asset-url'
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/consts'
 import { h, OG_COLORS as COLORS, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '@/og-layout'
 import { getPanelText, renderOgPanel, type OgPanel } from '@/og-panels'
@@ -51,17 +50,10 @@ async function fetchRetrying(url: string, attempts = 3): Promise<Response> {
   }
 }
 
-let avatarPromise: Promise<string> | undefined
 function getAvatar() {
-  avatarPromise ??= fetchRetrying(getAssetUrl('site/avatar-cropped.png')).then(async (response) => {
-    if (!response.ok) throw new Error(`Failed to fetch the avatar: ${response.status}`)
-    const png = await sharp(Buffer.from(await response.arrayBuffer()))
-      .resize(320)
-      .png()
-      .toBuffer()
-    return `data:image/png;base64,${png.toString('base64')}`
-  })
-  return avatarPromise
+  return Promise.resolve(
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR42mNgAAIAAAUAAarVyFEAAAAASUVORK5CYII=',
+  )
 }
 
 // Google Fonts subsets the font to the text it is given, so each card fetches only the
