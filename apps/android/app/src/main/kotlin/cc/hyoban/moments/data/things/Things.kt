@@ -193,6 +193,25 @@ object Things {
         return entryOf(base, uid, at, "subscription", part, edit.private, now)
     }
 
+    fun screenWorks(entries: Collection<JsonObject>): List<ScreenWork> = entries.mapNotNull { entry ->
+        val part = entry.part("screenWork") ?: return@mapNotNull null
+        ScreenWork(entry, part.text("title") ?: return@mapNotNull null, part.text("kind") ?: "movie", part.number("rating"), part.text("note"), Entries.isPrivate(entry))
+    }.sortedByDescending { it.entry.text("at") }
+
+    fun screenWorkEntry(base: JsonObject?, edit: ScreenWorkEdit, now: String): JsonObject {
+        val part = buildJsonObject {
+            (base?.part("screenWork") ?: JsonObject(emptyMap())).forEach { (key, value) -> put(key, value) }
+            put("v", 1)
+            put("title", edit.title)
+            put("kind", edit.kind)
+            edit.rating?.let { put("rating", it) }
+            edit.note.takeIf { it.isNotBlank() }?.let { put("note", it) }
+        }.withoutAbsent("rating".takeIf { edit.rating == null }, "note".takeIf { edit.note.isBlank() })
+        val at = base?.text("at") ?: LocalDate.now().toString()
+        val uid = base?.entryUid ?: Entries.stableUlid(at, "screenWork:${System.nanoTime()}")
+        return entryOf(base, uid, at, "screenWork", part, edit.private, now)
+    }
+
     /** A kebab-case id from a name, as the spec's ids are; a name with no letters of that kind takes [fallback]. */
     fun idOf(name: String, fallback: String): String =
         name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-').ifEmpty { fallback }
@@ -250,3 +269,8 @@ data class SubscriptionEdit(
     val note: String?,
     val private: Boolean,
 )
+
+data class ScreenWork(val entry: JsonObject, val title: String, val kind: String, val rating: Double?, val note: String?, val private: Boolean) {
+    val uid: String get() = entry.entryUid
+}
+data class ScreenWorkEdit(val title: String, val kind: String, val rating: Double?, val note: String, val private: Boolean)

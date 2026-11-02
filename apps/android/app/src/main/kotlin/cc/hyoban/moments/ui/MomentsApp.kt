@@ -256,6 +256,9 @@ data class Devices(val open: String? = null)
 @Serializable
 data class Subscriptions(val open: String? = null)
 
+@Serializable
+data class ScreenWorks(val open: String? = null)
+
 /** 车: the car's statistics from the Zeekr import. */
 @Serializable
 object Car
@@ -464,6 +467,7 @@ fun MomentsApp(container: AppContainer, pages: List<Any> = listOf(Feed)) {
         { uid ->
             val parts = container.repository.entries.value[uid]?.get("parts") as? kotlinx.serialization.json.JsonObject
             when {
+                parts?.containsKey("screenWork") == true -> navController.navigate(ScreenWorks(open = uid))
                 parts?.containsKey("device") == true -> navController.navigate(Devices(open = uid))
                 parts?.containsKey("subscription") == true -> navController.navigate(Subscriptions(open = uid))
             }
@@ -735,6 +739,7 @@ fun MomentsApp(container: AppContainer, pages: List<Any> = listOf(Feed)) {
                                             devices = { navController.navigate(Devices()) },
                                             subscriptions = { navController.navigate(Subscriptions()) },
                                             car = { navController.navigate(Car) },
+                                            screenWorks = { navController.navigate(ScreenWorks()) },
                                         ),
                                     )
                                 }
@@ -752,6 +757,9 @@ fun MomentsApp(container: AppContainer, pages: List<Any> = listOf(Feed)) {
                                 }
                                 screen<Subscriptions> { entry ->
                                     cc.hyoban.moments.ui.things.SubscriptionsScreen(container, onBack = back, open = entry.toRoute<Subscriptions>().open)
+                                }
+                                screen<ScreenWorks> { entry ->
+                                    cc.hyoban.moments.ui.things.ScreenWorksScreen(container, onBack = back, open = entry.toRoute<ScreenWorks>().open)
                                 }
                                 screen<Car> {
                                     cc.hyoban.moments.ui.things.CarScreen(container, onBack = back, onDay = openDay)

@@ -221,9 +221,10 @@ fun ChangesScreen(container: AppContainer, onMoment: (String) -> Unit, onBack: (
                     val revert = { container.scope.launch { container.repository.revertEntry(entry.entryUid) }; Unit }.takeUnless { busy }
                     val device = cc.hyoban.moments.data.things.Things.device(entry)
                     val subscription = cc.hyoban.moments.data.things.Things.subscription(entry)
+                    val screenWork = cc.hyoban.moments.data.things.Things.screenWorks(listOf(entry)).firstOrNull()
                     SwipeToRevert(revert) {
                         OutsideCard(
-                            device?.name ?: subscription?.name ?: entry.entryUid,
+                            device?.name ?: subscription?.name ?: screenWork?.title ?: entry.entryUid,
                             null,
                             device?.let { cc.hyoban.moments.ui.things.yuan(it.price) }
                                 ?: subscription?.let { cc.hyoban.moments.ui.things.priceOf(it.price, it.currency) },

@@ -4,6 +4,7 @@ import cc.hyoban.moments.data.spec.Spec
 import cc.hyoban.moments.data.things.DeviceEdit
 import cc.hyoban.moments.data.things.DeviceStatus
 import cc.hyoban.moments.data.things.Period
+import cc.hyoban.moments.data.things.ScreenWorkEdit
 import cc.hyoban.moments.data.things.SubscriptionEdit
 import cc.hyoban.moments.data.things.Things
 import cc.hyoban.moments.data.things.Vehicle
@@ -77,6 +78,23 @@ class ThingsTest {
         assertEquals("\"private\"", edited["visibility"].toString())
         assertEquals(phone["published"], edited["published"])
         assertEquals("\"2026-11-02T00:00:00Z\"", edited["updatedAt"].toString())
+    }
+
+    @Test
+    fun `film records keep their identity when edited and can be made private`() {
+        val now = "2026-11-01T00:00:00Z"
+        val original = Things.screenWorkEntry(null, ScreenWorkEdit("Test film", "movie", 4.5, "Review", false), now)
+        val work = Things.screenWorks(listOf(original)).single()
+        assertEquals("Test film", work.title)
+        assertEquals(4.5, work.rating)
+        assertFalse(work.private)
+        val changed = Things.screenWorkEntry(original, ScreenWorkEdit("Test series", "tv", null, "", true), now)
+        val updated = Things.screenWorks(listOf(changed)).single()
+        assertEquals(work.uid, updated.uid)
+        assertEquals("tv", updated.kind)
+        assertNull(updated.rating)
+        assertNull(updated.note)
+        assertTrue(updated.private)
     }
 
     @Test

@@ -1063,4 +1063,13 @@
     <string name="backup_failure_unreachable">Couldn’t reach the WebDAV server</string>
     <string name="backup_failure_other">Something unexpected went wrong</string>
     <string name="settings_backup_note">The phone’s databases go to this WebDAV directory as one zip: the ledger, the footprints, unpublished Moments and the copy of the site, without photos, videos or the API token. To restore, put the files back.</string>
+    <string name="screen_works_title">Films and shows</string>
+    <string name="screen_work_add">Add a film or show</string>
+    <string name="screen_work_empty">No films or shows yet</string>
+    <string name="screen_work_name">Title</string>
+    <string name="screen_work_movie">Film</string>
+    <string name="screen_work_tv">Series</string>
+    <string name="screen_work_rating">Rating (0–5, optional)</string>
+    <string name="screen_work_note">Review</string>
+    <string name="screen_work_public_note">Public records appear on the website</string>
 </resources>

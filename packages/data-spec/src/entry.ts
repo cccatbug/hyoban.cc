@@ -158,6 +158,15 @@ export const subscriptionPartSchema = z.looseObject({
   note: z.string().optional(),
 })
 
+/** A film or series the owner has watched. */
+export const screenWorkPartSchema = z.looseObject({
+  ...partBase,
+  title: z.string().trim().min(1),
+  kind: z.enum(['movie', 'tv']),
+  rating: z.number().min(0).max(5).optional(),
+  note: z.string().optional(),
+})
+
 /** The parts by plugin; one this version doesn't know is kept as it is. */
 export const entryPartsSchema = z.looseObject({
   text: textPartSchema.optional(),
@@ -167,6 +176,7 @@ export const entryPartsSchema = z.looseObject({
   charge: chargePartSchema.optional(),
   device: devicePartSchema.optional(),
   subscription: subscriptionPartSchema.optional(),
+  screenWork: screenWorkPartSchema.optional(),
 })
 
 export const entryLinkSchema = z.looseObject({ rel: z.string().min(1), to: ulid })
@@ -297,9 +307,9 @@ export function definePlugin<Part>(plugin: Plugin<Part>) {
 }
 
 type Parts = {
-  [K in 'text' | 'media' | 'food' | 'bill' | 'charge' | 'device' | 'subscription']: NonNullable<
-    z.output<typeof entryPartsSchema>[K]
-  >
+  [
+    K in 'text' | 'media' | 'food' | 'bill' | 'charge' | 'device' | 'subscription' | 'screenWork'
+  ]: NonNullable<z.output<typeof entryPartsSchema>[K]>
 }
 
 export const plugins = {
@@ -342,6 +352,12 @@ export const plugins = {
     version: 1,
     defaultVisibility: 'inherit',
     fallback: (part) => `买了 ${part.name}`,
+  }),
+  screenWork: definePlugin<Parts['screenWork']>({
+    id: 'screenWork',
+    version: 1,
+    defaultVisibility: 'inherit',
+    fallback: (part) => part.title,
   }),
   subscription: definePlugin<Parts['subscription']>({
     id: 'subscription',

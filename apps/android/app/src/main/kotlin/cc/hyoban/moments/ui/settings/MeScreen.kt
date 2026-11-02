@@ -80,6 +80,7 @@ class MeRoutes(
     val devices: () -> Unit,
     val subscriptions: () -> Unit,
     val car: () -> Unit,
+    val screenWorks: () -> Unit,
 )
 
 /**
@@ -292,6 +293,10 @@ private fun Things(container: AppContainer, routes: MeRoutes) {
             supporting = monthly.groupBy { it.currency }.entries.joinToString(" ") { (currency, rows) -> priceOf(rows.sumOf { it.price }, currency) }
                 .takeIf { it.isNotEmpty() }?.let { stringResource(R.string.me_subscriptions_summary, it) },
             onClick = routes.subscriptions,
+        )
+        MeRow(
+            AppIcons.Film, stringResource(R.string.screen_works_title), "me_screen_works", shapes,
+            onClick = routes.screenWorks,
         )
         MeRow(
             AppIcons.Car, stringResource(R.string.car_title), "me_car", shapes,

@@ -347,3 +347,21 @@ test("the car's statistics come back in the export and on the feed's first page"
   assert.deepEqual(feed.vehicleMonths, [month])
   assert.deepEqual(feed.deletedVehicleMonths, [])
 })
+
+test('film records can be published and returned by the sync API', async () => {
+  const { env } = setUp()
+  const film = {
+    uid: uid('film'),
+    at,
+    createdAt: at,
+    updatedAt: at,
+    parts: { screenWork: { v: 1, title: 'Test film', kind: 'movie', rating: 4.5, note: 'Review' } },
+  }
+  const result = await commit(env, { entries: [film] })
+  assert.equal(result.status, 200)
+  const { body } = await get(env, '/v2/export', owner)
+  assert.deepEqual(
+    body.entries.find((entry) => entry.uid === film.uid)?.parts.screenWork,
+    film.parts.screenWork,
+  )
+})

@@ -1026,4 +1026,13 @@
     <string name="backup_failure_unreachable">连不上 WebDAV 服务器</string>
     <string name="backup_failure_other">发生了意外错误</string>
     <string name="settings_backup_note">把手机上的数据库打成一个 zip 传到这个 WebDAV 目录：记账、足迹、未发布的时刻和网站的副本，不带照片和视频，也不带 API 令牌。恢复时把文件放回去。</string>
+    <string name="screen_works_title">影视</string>
+    <string name="screen_work_add">添加影视</string>
+    <string name="screen_work_empty">还没有影视记录</string>
+    <string name="screen_work_name">作品名称</string>
+    <string name="screen_work_movie">电影</string>
+    <string name="screen_work_tv">电视剧</string>
+    <string name="screen_work_rating">评分（0–5，可留空）</string>
+    <string name="screen_work_note">观后感</string>
+    <string name="screen_work_public_note">公开后可在网站影视页面查看</string>
 </resources>
