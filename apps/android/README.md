@@ -53,7 +53,7 @@ clear of the camera's cutout on whichever side it is.
   There is no settings page over them, and under 我 there is one level of pages: what goes
   deeper, such as a book, the exchange rates or a side key gesture's action, opens over its
   page as a sheet or a dialog. Theme and language have no setting; they follow the phone.
-- **东西** in 我 opens four pages. 影视 lists films and series with an optional rating, review and up to nine images; records can be public or private and wait for 发布更改 before syncing. 设备 (`moments://devices`) lists what is owned and what was
+- **东西** in 我 opens four pages. 影视 lists films and series with an optional five-star rating, review and up to nine images; records can be public or private and wait for 发布更改 before syncing. 设备 (`moments://devices`) lists what is owned and what was
   sold, each with what it costs a day; 订阅 (`moments://subscriptions`) what is paid by the
   month, by the year and once. Each device and subscription is an entry with its plugin's
   part, edited in a sheet and published with the rest from 发布更改. 车 (`moments://car`)

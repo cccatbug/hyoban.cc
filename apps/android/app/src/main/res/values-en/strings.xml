@@ -1069,7 +1069,9 @@
     <string name="screen_work_name">Title</string>
     <string name="screen_work_movie">Film</string>
     <string name="screen_work_tv">Series</string>
-    <string name="screen_work_rating">Rating (0–5, optional)</string>
+    <string name="screen_work_rating">Rating (optional)</string>
+    <string name="screen_work_rate_stars">%1$d stars</string>
+    <string name="screen_work_score">Rating: %1$.1f / 5</string>
     <string name="screen_work_note">Review</string>
     <string name="screen_work_public_note">Public records appear on the website</string>
     <string name="screen_work_add_photos">Add images (up to 9)</string>

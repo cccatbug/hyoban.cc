@@ -10,7 +10,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -78,11 +81,10 @@ private fun ScreenWorkSheet(container: AppContainer, work: ScreenWork?, onDismis
     }
     var title by rememberSaveable { mutableStateOf(work?.title.orEmpty()) }
     var kind by rememberSaveable { mutableStateOf(work?.kind ?: "movie") }
-    var rating by rememberSaveable { mutableStateOf(work?.rating?.toString().orEmpty()) }
+    var score by rememberSaveable { mutableStateOf(work?.rating) }
     var note by rememberSaveable { mutableStateOf(work?.note.orEmpty()) }
     var public by rememberSaveable { mutableStateOf(work?.private != true) }
-    val score = rating.toDoubleOrNull()
-    val valid = title.isNotBlank() && (rating.isBlank() || (score != null && score in 0.0..5.0))
+    val valid = title.isNotBlank()
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = AppColors.sheet) {
         Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = Space.gutter, vertical = Space.l), verticalArrangement = Arrangement.spacedBy(Space.l)) {
             Text(work?.title ?: stringResource(R.string.screen_work_add), style = AppTheme.typography.title)
@@ -91,7 +93,26 @@ private fun ScreenWorkSheet(container: AppContainer, work: ScreenWork?, onDismis
                 FilterChip(selected = kind == "movie", onClick = { kind = "movie" }, label = { Text(stringResource(R.string.screen_work_movie)) })
                 FilterChip(selected = kind == "tv", onClick = { kind = "tv" }, label = { Text(stringResource(R.string.screen_work_tv)) })
             }
-            OutlinedTextField(rating, { rating = it }, label = { Text(stringResource(R.string.screen_work_rating)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            Column {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.screen_work_rating), style = AppTheme.typography.label, color = tokens.tx2, modifier = Modifier.weight(1f))
+                    if (score != null) TextButton(onClick = { score = null }) { Text(stringResource(R.string.action_clear)) }
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    (1..5).forEach { value ->
+                        val description = stringResource(R.string.screen_work_rate_stars, value)
+                        Box(
+                            modifier = Modifier.size(48.dp).clickable { score = value.toDouble() }
+                                .semantics { contentDescription = description }.testTag("screen_work_star_$value"),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(if ((score ?: 0.0) >= value) AppIcons.StarFill else AppIcons.Star, contentDescription = null,
+                                modifier = Modifier.size(26.dp), tint = if ((score ?: 0.0) >= value) tokens.accent else tokens.tx3)
+                        }
+                    }
+                }
+                if (score != null) Text(stringResource(R.string.screen_work_score, score!!), style = AppTheme.typography.caption, color = tokens.tx2)
+            }
             OutlinedTextField(note, { note = it }, label = { Text(stringResource(R.string.screen_work_note)) }, modifier = Modifier.fillMaxWidth())
             TextButton(onClick = { picker.launch(arrayOf("image/*")) }, enabled = kept.size + picked.size < 9 && !saving) { Text(stringResource(R.string.screen_work_add_photos)) }
             kept.toList().forEach { image ->

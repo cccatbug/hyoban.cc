@@ -1032,7 +1032,9 @@
     <string name="screen_work_name">作品名称</string>
     <string name="screen_work_movie">电影</string>
     <string name="screen_work_tv">电视剧</string>
-    <string name="screen_work_rating">评分（0–5，可留空）</string>
+    <string name="screen_work_rating">评分（可选）</string>
+    <string name="screen_work_rate_stars">%1$d 星</string>
+    <string name="screen_work_score">当前评分：%1$.1f / 5</string>
     <string name="screen_work_note">观后感</string>
     <string name="screen_work_public_note">公开后可在网站影视页面查看</string>
     <string name="screen_work_add_photos">添加图片（最多 9 张）</string>

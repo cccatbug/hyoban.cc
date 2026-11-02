@@ -48,6 +48,8 @@ object AppIcons {
     val Home: ImageVector by lazy { icon("home", false, listOf("M4.5 11 11 5.4a1.5 1.5 0 0 1 2 0l6.5 5.6V18a2.5 2.5 0 0 1-2.5 2.5H7A2.5 2.5 0 0 1 4.5 18z", "M10 20.5v-3.5a2 2 0 0 1 4 0v3.5", "M16.5 8.4L16.5 5")) }
 
     // Actions
+    val Star: ImageVector by lazy { icon("star", false, listOf("M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z")) }
+    val StarFill: ImageVector by lazy { icon("star-fill", false, listOf(), listOf("M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z")) }
     val Plus: ImageVector by lazy { icon("plus", false, listOf("M12 5.5L12 18.5", "M5.5 12L18.5 12")) }
     val Minus: ImageVector by lazy { icon("minus", false, listOf("M5 12L19 12")) }
     val Close: ImageVector by lazy { icon("close", false, listOf("M6 6L18 18", "M18 6L6 18")) }
