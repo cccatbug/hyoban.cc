@@ -591,9 +591,15 @@ class MomentsRepository(
                 )
             }
         }
-        val total = originals.size + 1
+        val thingOriginals = things.values.flatMap { entry ->
+            cc.hyoban.moments.data.things.Things.screenWorkMedia(entry).filter { it.published == null }.map { media ->
+                Triple(entry.entryUid, media, UploadPart.IMAGE)
+            }
+        }
+        val allOriginals = originals + thingOriginals
+        val total = allOriginals.size + 1
         val applied = withContext(io) {
-            val files = originals.map { (uid, media, part) ->
+            val files = allOriginals.map { (uid, media, part) ->
                 val uri = if (part == UploadPart.VIDEO) media.local?.videoUri else media.local?.uri
                 val file = uri?.let { runCatching { File(URI(it)) }.getOrNull() }?.takeIf(File::isFile)
                     ?: error("The ${part.path} of ${media.uid} isn't on the phone")
@@ -662,7 +668,7 @@ class MomentsRepository(
                 local?.writeChangedTrips(changedTrips)
                 // The site has the entries as sent; one changed again while this was sent stays to be published.
                 val second = _second.value
-                _second.value = second.copy(entries = second.entries - goneThings + things)
+                _second.value = second.copy(entries = second.entries - goneThings + things + applied.entries.filter { it.entryUid in things }.associateBy { it.entryUid })
                 changedEntries = changedEntries.filter { (uid, entry) -> things[uid] != entry }
                 removedEntries = removedEntries - goneThings
                 local?.writeChangedEntries(changedEntries, removedEntries)

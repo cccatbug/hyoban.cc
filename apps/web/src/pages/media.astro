@@ -1,5 +1,6 @@
 ---
 import SitePage from '@/components/SitePage.astro'
+import { getResizedSources } from '@/asset-url'
 import { readEntries } from '@/data/store'
 import Layout from '@/layouts/Layout.astro'
 import { getPageCardPath, getPageTitle, MEDIA_TEXT } from '@/page-cards'
@@ -18,6 +19,9 @@ const works = publicScreenWorks(readEntries().map(({ record }) => record))
               <h2>{work.title}</h2>
               <p class="meta">{work.kind === 'tv' ? '电视剧' : '电影'}{work.rating !== undefined && ` · ${work.rating} / 5`}</p>
               {work.note && <p class="note">{work.note}</p>}
+              {work.media.length > 0 && <div class="photos">{work.media.map((image) => image.type === 'image' && image.published && (
+                <img src={getResizedSources(image.published).at(-1)?.src} alt={image.alt || `${work.title}的图片`} loading="lazy" />
+              ))}</div>}
             </article>
           </li>
         ))}
@@ -31,5 +35,7 @@ const works = publicScreenWorks(readEntries().map(({ record }) => record))
   .works { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
   .works h2 { font-weight: 500; }
   .meta { margin-top: .25rem; }
+  .photos { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+  .photos img { width: 8rem; aspect-ratio: 1; object-fit: cover; border-radius: .25rem; }
   .note { margin-top: .5rem; white-space: pre-wrap; }
 </style>

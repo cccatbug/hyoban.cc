@@ -995,7 +995,7 @@
     <string name="car_assisted_beats">辅助驾驶里程超过 %d%% 的车主</string>
     <string name="car_previous_month">上个月</string>
     <string name="car_next_month">下个月</string>
-    <string name="section_changed_things">设备与订阅</string>
+    <string name="section_changed_things">设备、订阅与影视</string>
     <string name="thing_new">新加的</string>
     <string name="thing_deleted">会从网站删除</string>
     <string name="thing_changed">改过的</string>
@@ -1035,4 +1035,8 @@
     <string name="screen_work_rating">评分（0–5，可留空）</string>
     <string name="screen_work_note">观后感</string>
     <string name="screen_work_public_note">公开后可在网站影视页面查看</string>
+    <string name="screen_work_add_photos">添加图片（最多 9 张）</string>
+    <string name="screen_work_photo">影视图片</string>
+    <string name="screen_work_remove_photo">移除图片</string>
+    <string name="screen_work_photo_error">图片读取失败，请重新选择。</string>
 </resources>

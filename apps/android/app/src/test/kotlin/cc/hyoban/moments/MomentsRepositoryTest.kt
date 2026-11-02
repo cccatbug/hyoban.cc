@@ -387,6 +387,23 @@ class MomentsRepositoryTest {
     }
 
     @Test
+    fun `publishing a film uploads its image before the entry`() = runBlocking {
+        val writer = FakeWriter()
+        val repository = MomentsRepository(copy(), api, Dispatchers.Unconfined, local = DataStore(localDirectory), writer = writer)
+        repository.load()
+        val photo = File(localDirectory, "media/film.jpg").apply { parentFile.mkdirs(); writeText("film photo") }
+        val media = MomentMedia("01ARZ3NDEKTSV4RRFFQ69G5FAV", MediaType.IMAGE, width = 4, height = 3, local = LocalMedia(photo.toURI().toString(), copied = true))
+        val entry = cc.hyoban.moments.data.things.Things.screenWorkEntry(null, cc.hyoban.moments.data.things.ScreenWorkEdit("Film", "movie", 4.0, "", false), "2026-11-01T00:00:00Z", listOf(media))
+        repository.saveEntry(entry)
+        assertTrue(writer.calls.isEmpty())
+        repository.publishPending()
+        assertEquals("film photo", writer.uploads[media.uid])
+        assertTrue(writer.calls.first().startsWith("upload "))
+        assertTrue(writer.calls.last().startsWith("changes "))
+        assertEquals(0, repository.pending.value.size)
+    }
+
+    @Test
     fun `nothing reaches the API until the changes are published, all of them at once`() = runBlocking {
         val writer = FakeWriter(api)
         fun repository() = MomentsRepository(copy(), api, Dispatchers.Unconfined, local = DataStore(localDirectory), writer = writer)

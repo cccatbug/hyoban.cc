@@ -6,7 +6,9 @@ export function publicScreenWorks(entries: Entry[]) {
     .flatMap((entry) => {
       const visible = getPublicEntry(entry)
       const work = visible?.parts.screenWork
-      return visible && work ? [{ ...work, uid: visible.uid, date: visible.at }] : []
+      return visible && work
+        ? [{ ...work, uid: visible.uid, date: visible.at, media: visible.parts.media?.items ?? [] }]
+        : []
     })
     .sort((a, b) => b.date.localeCompare(a.date))
 }

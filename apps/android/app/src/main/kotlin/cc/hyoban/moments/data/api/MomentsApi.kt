@@ -78,6 +78,7 @@ data class AppliedChanges(
     val moments: List<MomentRecord>,
     val deleted: List<String>,
     val revision: Long? = null,
+    val entries: List<JsonObject> = emptyList(),
 )
 
 /** An original of a media item: a photo, a live photo's still, or a video or a live photo's motion. */
@@ -176,7 +177,7 @@ class MomentsApi(
         )
         val text = write("POST", "/v2/changes", encode(EntryChangeSet.serializer(), second), publishing)
         val applied = decode(text, AppliedEntryChanges.serializer())
-        return AppliedChanges(applied.places, applied.entries.mapNotNull(Entries::toMoment), applied.deleted, applied.revision)
+        return AppliedChanges(applied.places, applied.entries.mapNotNull(Entries::toMoment), applied.deleted, applied.revision, applied.entries)
     }
 
     private suspend fun <T> get(path: String, serializer: KSerializer<T>): T =

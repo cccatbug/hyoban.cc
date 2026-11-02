@@ -1,5 +1,8 @@
 package cc.hyoban.moments.ui.things
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,12 +11,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import java.io.File
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cc.hyoban.moments.AppContainer
 import cc.hyoban.moments.R
 import cc.hyoban.moments.data.local.recordTime
+import cc.hyoban.moments.data.local.Photos
+import cc.hyoban.moments.data.local.Ulid
+import cc.hyoban.moments.data.spec.MomentMedia
+import cc.hyoban.moments.data.spec.LocalMedia
+import cc.hyoban.moments.data.spec.MediaType
 import cc.hyoban.moments.data.things.ScreenWork
 import cc.hyoban.moments.data.things.ScreenWorkEdit
 import cc.hyoban.moments.data.things.Things
@@ -24,6 +37,7 @@ import cc.hyoban.moments.ui.settings.SegmentedGroup
 import cc.hyoban.moments.ui.settings.SwitchRow
 import cc.hyoban.moments.ui.theme.Space
 import cc.hyoban.moments.ui.theme.tokens
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,6 +68,14 @@ fun ScreenWorksScreen(container: AppContainer, onBack: () -> Unit, open: String?
 @Composable
 private fun ScreenWorkSheet(container: AppContainer, work: ScreenWork?, onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val kept = remember(work) { mutableStateListOf<MomentMedia>().apply { addAll(work?.entry?.let(Things::screenWorkMedia).orEmpty()) } }
+    val picked = remember(work) { mutableStateListOf<Uri>() }
+    var saving by remember { mutableStateOf(false) }
+    var failed by remember { mutableStateOf(false) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+        picked.addAll(uris.filter { it !in picked }.take((9 - kept.size - picked.size).coerceAtLeast(0)))
+    }
     var title by rememberSaveable { mutableStateOf(work?.title.orEmpty()) }
     var kind by rememberSaveable { mutableStateOf(work?.kind ?: "movie") }
     var rating by rememberSaveable { mutableStateOf(work?.rating?.toString().orEmpty()) }
@@ -71,11 +93,50 @@ private fun ScreenWorkSheet(container: AppContainer, work: ScreenWork?, onDismis
             }
             OutlinedTextField(rating, { rating = it }, label = { Text(stringResource(R.string.screen_work_rating)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(note, { note = it }, label = { Text(stringResource(R.string.screen_work_note)) }, modifier = Modifier.fillMaxWidth())
+            TextButton(onClick = { picker.launch(arrayOf("image/*")) }, enabled = kept.size + picked.size < 9 && !saving) { Text(stringResource(R.string.screen_work_add_photos)) }
+            kept.toList().forEach { image ->
+                Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
+                    AsyncImage(model = container.mediaUrls.still(image, 480), contentDescription = stringResource(R.string.screen_work_photo), contentScale = ContentScale.Crop, modifier = Modifier.size(80.dp))
+                    TextButton(onClick = { kept.remove(image) }) { Text(stringResource(R.string.screen_work_remove_photo)) }
+                }
+            }
+            picked.toList().forEach { uri ->
+                Row(horizontalArrangement = Arrangement.spacedBy(Space.s)) {
+                    AsyncImage(model = uri, contentDescription = stringResource(R.string.screen_work_photo), contentScale = ContentScale.Crop, modifier = Modifier.size(80.dp))
+                    TextButton(onClick = { picked.remove(uri) }) { Text(stringResource(R.string.screen_work_remove_photo)) }
+                }
+            }
+            if (failed) Text(stringResource(R.string.screen_work_photo_error), color = tokens.danger)
             SegmentedGroup(null, null, listOf({ shapes -> SwitchRow(public, AppIcons.Eye, stringResource(R.string.visibility_public), "screen_work_public", shapes, supporting = stringResource(R.string.screen_work_public_note)) { public = !public } }))
             Row(Modifier.fillMaxWidth()) {
                 if (work != null) TextButton(onClick = { scope.launch { container.repository.deleteEntry(work.uid); onDismiss() } }) { Text(stringResource(R.string.action_delete), color = tokens.danger) }
                 Spacer(Modifier.weight(1f))
-                Button(enabled = valid, onClick = { scope.launch { container.repository.saveEntry(Things.screenWorkEntry(work?.entry, ScreenWorkEdit(title.trim(), kind, score, note.trim(), !public), recordTime())); onDismiss() } }, modifier = Modifier.testTag("screen_work_save")) { Text(stringResource(R.string.action_save)) }
+                Button(enabled = valid && !saving, onClick = {
+                    saving = true
+                    failed = false
+                    scope.launch {
+                        val copies = mutableListOf<File>()
+                        try {
+                            val added = picked.map { uri ->
+                                val info = Photos.read(context, uri)
+                                val width = requireNotNull(info.width?.takeIf { it > 0 })
+                                val height = requireNotNull(info.height?.takeIf { it > 0 })
+                                require(!info.video && (info.type == null || info.type.startsWith("image/")))
+                                val id = Ulid.next()
+                                val copy = Photos.copy(context, uri, File(container.localStore.root, "media"), id)
+                                copies.add(copy.file)
+                                MomentMedia(uid = id, type = MediaType.IMAGE, width = width, height = height, local = LocalMedia(uri = Uri.fromFile(copy.file).toString(), sha256 = copy.sha256, copied = true))
+                            }
+                            container.repository.saveEntry(Things.screenWorkEntry(work?.entry, ScreenWorkEdit(title.trim(), kind, score, note.trim(), !public), recordTime(), kept.toList() + added))
+                            onDismiss()
+                        } catch (error: CancellationException) {
+                            throw error
+                        } catch (error: Exception) {
+                            copies.forEach(File::delete)
+                            failed = true
+                        } finally { saving = false }
+                    }
+                }, modifier = Modifier.testTag("screen_work_save")) { Text(stringResource(R.string.action_save)) }
             }
         }
     }

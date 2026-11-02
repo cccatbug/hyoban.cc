@@ -2,8 +2,12 @@ package cc.hyoban.moments.data.things
 
 import cc.hyoban.moments.data.spec.Entries
 import cc.hyoban.moments.data.spec.Visibility
+import cc.hyoban.moments.data.spec.MomentMedia
+import cc.hyoban.moments.data.spec.Spec
 import cc.hyoban.moments.data.spec.entryUid
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonObject
@@ -198,7 +202,10 @@ object Things {
         ScreenWork(entry, part.text("title") ?: return@mapNotNull null, part.text("kind") ?: "movie", part.number("rating"), part.text("note"), Entries.isPrivate(entry))
     }.sortedByDescending { it.entry.text("at") }
 
-    fun screenWorkEntry(base: JsonObject?, edit: ScreenWorkEdit, now: String): JsonObject {
+    fun screenWorkMedia(entry: JsonObject): List<MomentMedia> =
+        (if (entry.part("screenWork") == null) null else entry.part("media")?.get("items") as? JsonArray).orEmpty().map { Spec.json.decodeFromJsonElement(MomentMedia.serializer(), it) }
+
+    fun screenWorkEntry(base: JsonObject?, edit: ScreenWorkEdit, now: String, media: List<MomentMedia> = base?.let(::screenWorkMedia).orEmpty()): JsonObject {
         val part = buildJsonObject {
             (base?.part("screenWork") ?: JsonObject(emptyMap())).forEach { (key, value) -> put(key, value) }
             put("v", 1)
@@ -209,7 +216,13 @@ object Things {
         }.withoutAbsent("rating".takeIf { edit.rating == null }, "note".takeIf { edit.note.isBlank() })
         val at = base?.text("at") ?: LocalDate.now().toString()
         val uid = base?.entryUid ?: Entries.stableUlid(at, "screenWork:${System.nanoTime()}")
-        return entryOf(base, uid, at, "screenWork", part, edit.private, now)
+        val result = entryOf(base, uid, at, "screenWork", part, edit.private, now)
+        val parts = result.getValue("parts").jsonObject
+        val next = if (media.isEmpty()) parts - "media" else parts + ("media" to buildJsonObject {
+            put("v", 1)
+            put("items", JsonArray(media.map { Spec.json.encodeToJsonElement(MomentMedia.serializer(), it) }))
+        })
+        return JsonObject(result + ("parts" to JsonObject(next)))
     }
 
     /** A kebab-case id from a name, as the spec's ids are; a name with no letters of that kind takes [fallback]. */

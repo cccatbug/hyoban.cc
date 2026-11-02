@@ -365,3 +365,43 @@ test('film records can be published and returned by the sync API', async () => {
     film.parts.screenWork,
   )
 })
+
+test('a film image is uploaded, published and returned without its phone path', async () => {
+  const { env } = setUp()
+  const filmUid = uid('film-image')
+  const imageUid = uid('film-image-file')
+  const upload = await call(env, 'PUT', `/v2/entries/${filmUid}/media/${imageUid}/image`, {
+    ...owner,
+    body: new Uint8Array([255, 216, 255, 224, 1, 2]),
+    headers: { 'Content-Type': 'image/jpeg' },
+  })
+  assert.equal(upload.status, 201)
+  const film = {
+    uid: filmUid,
+    at,
+    createdAt: at,
+    updatedAt: at,
+    parts: {
+      screenWork: { v: 1, title: 'Test film', kind: 'movie' },
+      media: {
+        v: 1,
+        items: [
+          {
+            uid: imageUid,
+            type: 'image',
+            alt: '',
+            width: 10,
+            height: 10,
+            local: { uri: 'file:///private/test.jpg' },
+          },
+        ],
+      },
+    },
+  }
+  const result = await commit(env, { entries: [film] })
+  assert.equal(result.status, 200)
+  const { body } = await get(env, '/v2/export', owner)
+  const image = body.entries.find((entry) => entry.uid === filmUid).parts.media.items[0]
+  assert.ok(image.published.key.startsWith('moments/'))
+  assert.equal(image.local, undefined)
+})

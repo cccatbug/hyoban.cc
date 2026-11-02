@@ -18,6 +18,23 @@ describe('film records', () => {
       { title: 'Test film', kind: 'movie', rating: 4.5, note: 'A review' },
     ])
   })
+  it('does not expose an image when its media part is private', () => {
+    const record = entry('public')
+    record.parts.media = {
+      v: 1,
+      visibility: 'private',
+      items: [
+        {
+          uid: '01ARZ3NDEKTSV4RRFFQ69G5FAW',
+          type: 'image',
+          width: 10,
+          height: 10,
+          alt: '',
+        },
+      ],
+    }
+    expect(publicScreenWorks([record])[0]?.media).toEqual([])
+  })
   it('rejects ratings outside the supported range', () => {
     expect(() => entry('public', 6)).toThrow()
   })
